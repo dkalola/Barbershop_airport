@@ -439,12 +439,25 @@ class FirebaseData {
     let user = db.collection("master").doc(docID);
     let employees = snapshot.docs[0].data().employees;
 
+    let emData = {
+      email: data.email,
+      name: data.name,
+      phone: data.phone,
+      bio: data.bio,
+      title: data.title,
+      id: generateApiKey({
+        method: "string",
+        length: 32,
+        pool: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+      }),
+    };
+
     if (employees == undefined) {
       user.update({
-        employees: [data],
+        employees: [emData],
       });
     } else {
-      employees.push(data);
+      employees.push(emData);
       user.update({
         employees: employees,
       });
@@ -469,7 +482,7 @@ class FirebaseData {
       return false;
     } else {
       for (let i = 0; i < employees.length; i++) {
-        if (employees[i].email == data.email) {
+        if (employees[i].id == data.id) {
           continue;
         } else {
           editarray.push(employees[i]);
